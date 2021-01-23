@@ -1,0 +1,180 @@
+= Specialization classifier
+
+== Overview
+
+Goal of this project was to train a classifier on medical patients' questions and predict, which medical field the questions belong to. The classifier managed to reach an F1-score of 0.915 and an accuracy of 0.913, therefore it is deemed successful.
+
+=== Keywords
+NLP, Logistic Regression, Tf-Idf, Supervised, Multinomial Classification.
+
+
+== Files
+
+[cols="1,3"]
+|===
+| Name | Description
+| config.py | Configuration variables
+| requirements.txt | Required Python packages
+| service.py | Script for model deployment
+| train_model.py | Script for model training
+|===
+
+== Installation
+
+=== Requirements
+- Python 3.7+
+
+=== Installing Python packages
+
+==== Automatically
+To reduce headaches with incompatible package versions across multiple projects, it is preferred to maintain separate environments.
+After creating and activating a conda environment, all required packages are available just for the environment.
+
+. Install https://docs.anaconda.com/anaconda/install/[Anaconda]
+. Create conda environment: `conda create -y --name <env-name> python=3.7`
+. Install the packages from the `requirements.txt`: `conda install --force-reinstall -y -q --name <env-name> -c conda-forge --file requirements.txt`
+. Activate the environment: `conda activate <env-name>`
+
+==== Manually
+To install packages manually, go to the `requirements.txt` file and install each package.
+For example: to resolve the `numpy=1.19.5` line, simply run `pip install numpy`.
+
+== Usage instructions
+
+Summary of steps is following:
+
+. Data preparation
+.. Vectorizer data
+.. Classifier data
+. Training
+.. Run `python3 train_model.py`
+. Deployment
+.. Run `python3 service.py`
+
+=== Data preparation
+
+`train_model.py` expects two CSV files. The first for the vectorizer training and the second for the classifier training.
+Place them in the *root folder* with proper names as described in `config.py`:
+
+- `VOCABULARY_DATA_PATH = 'data_vectorizer.csv'`
+- `CLASSIFIER_DATA_PATH = 'data_classifier.csv'`
+
+For the vectorizer training, provide as much data as possible.
+For the classifier training, you can provide less, but cleaner data (double check that spec. id's are correctly assigned) for better accuracy.
+Keep in mind, that reducing the data, can worsen the final accuracy.
+
+Expected CSV format:
+[cols="1,1,1"]
+|===
+| Name | Type | Description
+
+| question | string | Question asked by the client
+| spec_id | number | Specialization ID
+|===
+
+=== Training
+
+To train the model, run `python3 train_model.py`.
+
+Training script expects these configuration variables:
+[cols="2,1,2,2"]
+|===
+| Name | Type | Description | Example
+
+| PICKLE_VECTORIZER_NAME | string | Vectorizer file name | `'model_vectorizer.pickle'`
+| PICKLE_CLASSIFIER_NAME | string | Classifier file name | `'model_classifier.pickle'`
+| VOCABULARY_DATA_PATH | string | Vectorizer file name | `'data_vectorizer.csv'`
+| CLASSIFIER_DATA_PATH | string | Classifier file name | `'data_classifier.csv'`
+| RANDOM_STATE | number | Random number to ensure consistent training results | `42`
+| MAPPING | dictionary | Mapping of specialization IDs | `{ 20: 2, 15:2, 11: 1 }`
+|===
+
+==== Output
+- Classifier model stored in `CLASSIFIER_DATA_PATH`
+- Vectorizer model stored in `VOCABULARY_DATA_PATH`
+
+
+==== How to extend the mapping of specializations
+
+If you want to add additional specialization, simply add the key: value pair into the dictionary.
+*Key* represents the *source* specialization and value represents the *target* specialization
+(e.g. to map from id 11 to id 4, just add the pair as: `{ 11: 4 }`)
+
+*There are two rules to follow:*
+
+. Target ID *0 is reserved* for the default/unmapped classes
+. *Target IDs must create a sequence* of 1 to N (There can be no skipped numbers from 1 to N).
+
+=== Deployment
+
+To deploy the model, run `python3 service.py`. This script will deploy the model as a service using the
+Flask micro web framework and the Waitress WSGI server.
+
+Host, port, API version and prefix can be configured in the `config.py`.
+
+==== REST API
+
+[cols="h,5a"]
+|===
+| URL
+| /api/v1/predictions/specialization
+
+| query param
+| question: string
+
+| Method
+| GET
+
+| Response
+|
+    200 OK - returns number // ID of predicted specialization
+
+    500 Internal Server Error
+
+| Example
+| Request:
+
+ http://localhost:5000/api/v1/predictions/specialization?question='Trápí mě zubní kaz'
+
+Response:
+
+ 4
+
+|===
+
+=== Health check
+[cols="h,5a"]
+|===
+| URL
+| /api/v1/health-check
+
+| Method
+| GET
+
+| Response Status
+|
+    200 OK
+
+    404 Not Found
+|===
+
+== Copyright and licensing information
+Copyright (c) 2021 Adam Jankovec
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
