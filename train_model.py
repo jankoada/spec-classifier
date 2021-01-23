@@ -15,7 +15,7 @@ simplefilter("ignore", category=ConvergenceWarning)
 
 import config
 
-
+# Regex patterns to remove leftover template sentences from the question
 pattern_end = '[\.\:,!?\n\r\t\s]'
 pattern_suffix = pattern_end + '*)'
 patterns = []
