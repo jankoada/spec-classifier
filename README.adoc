@@ -13,6 +13,7 @@ NLP, Logistic Regression, Tf-Idf, Supervised, Multinomial Classification.
 [cols="1,3"]
 |===
 | Name | Description
+
 | config.py | Configuration variables
 | requirements.txt | Required Python packages
 | service.py | Script for model deployment
@@ -53,8 +54,18 @@ Summary of steps is following:
 
 === Data preparation
 
-`train_model.py` expects two CSV files. The first for the vectorizer training and the second for the classifier training.
-Place them in the *root folder* with proper names as described in `config.py`:
+`train_model.py` expects two *CSV* files. The first for the vectorizer training and the second for the classifier training.
+
+SQL Query to fetch the data:
+....
+SELECT
+  q.text AS question,
+  mp.id AS spec_id
+FROM question q
+JOIN medical_problem mp ON q.medical_problem_id = mp.id;
+....
+
+Place the datasets in the *root folder* with proper names as described in `config.py`:
 
 - `VOCABULARY_DATA_PATH = 'data_vectorizer.csv'`
 - `CLASSIFIER_DATA_PATH = 'data_classifier.csv'`
