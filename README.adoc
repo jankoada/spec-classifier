@@ -2,7 +2,7 @@
 
 == Overview
 
-Goal of this project was to train a classifier on medical patients' questions and predict, which medical field the questions belong to. The classifier managed to reach an F1-score of 0.915 and an accuracy of 0.913, therefore it is deemed successful.
+Goal of this project was to train a classifier on medical patients' questions and predict, which medical field the questions belong to. The classifier managed to reach an F1-score of 0.915 and an accuracy of 0.913.
 
 === Keywords
 NLP, Logistic Regression, Tf-Idf, Supervised, Multinomial Classification.
