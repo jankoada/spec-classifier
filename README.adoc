@@ -94,10 +94,10 @@ Training script expects these configuration variables:
 
 | PICKLE_VECTORIZER_NAME | string | Vectorizer file name | `'model_vectorizer.pickle'`
 | PICKLE_CLASSIFIER_NAME | string | Classifier file name | `'model_classifier.pickle'`
-| VOCABULARY_DATA_PATH | string | Vectorizer file name | `'data_vectorizer.csv'`
-| CLASSIFIER_DATA_PATH | string | Classifier file name | `'data_classifier.csv'`
+| VOCABULARY_DATA_PATH | string | Vectorizer data file name | `'data_vectorizer.csv'`
+| CLASSIFIER_DATA_PATH | string | Classifier data file name | `'data_classifier.csv'`
 | RANDOM_STATE | number | Random number to ensure consistent training results | `42`
-| MAPPING | dictionary | Mapping of specialization IDs | `{ 20: 2, 15:2, 11: 1 }`
+| MAPPING | dictionary | Mapping of the specialization IDs | `{ 20: 2, 15:2, 11: 1 }`
 |===
 
 ==== Output
@@ -107,7 +107,7 @@ Training script expects these configuration variables:
 
 ==== How to extend the mapping of specializations
 
-If you want to add additional specialization, simply add the key: value pair into the dictionary.
+If you want to add additional specialization, simply add the key-value pair into the dictionary.
 *Key* represents the *source* specialization and value represents the *target* specialization
 (e.g. to map from id 11 to id 4, just add the pair as: `{ 11: 4 }`)
 
